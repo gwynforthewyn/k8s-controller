@@ -1,0 +1,8 @@
+FROM fedora:latest AS base
+RUN useradd -u 1001 player
+
+FROM scratch
+COPY --from=base /etc/passwd /etc/passwd
+USER player
+COPY k8s-controller /k8s-controller
+ENTRYPOINT ["/k8s-controller"]

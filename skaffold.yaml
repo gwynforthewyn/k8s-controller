@@ -1,0 +1,12 @@
+apiVersion: skaffold/v4beta4
+kind: Config
+metadata:
+  name: play-controller
+build:
+  artifacts:
+    - image: playtechnique/play-controller
+      docker:
+        dockerfile: Dockerfile
+manifests:
+  rawYaml:
+    - kubernetes/pod.yaml

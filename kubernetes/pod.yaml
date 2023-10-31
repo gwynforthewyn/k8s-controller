@@ -1,0 +1,21 @@
+#https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#pod-v1-core
+#https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#podspec-v1-core
+apiVersion: v1
+kind: Pod
+metadata:
+  name: play-controller
+spec:
+  containers:
+    -   name: play-controller
+        image: playtechnique/play-controller:pre-release
+        securityContext:
+          runAsUser: 1001
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - "ALL"
+  restartPolicy: OnFailure
+  securityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
