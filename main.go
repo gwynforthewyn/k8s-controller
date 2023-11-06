@@ -3,14 +3,13 @@ package main
 import (
 	"context"
 	"fmt"
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/client-go/kubernetes"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/config"
-	"sigs.k8s.io/controller-runtime/pkg/controller"
-	"sigs.k8s.io/controller-runtime/pkg/manager"
 	"time"
 )
-import "sigs.k8s.io/controller-runtime"
 import "sigs.k8s.io/controller-runtime/pkg/reconcile"
 
 // ./k8s-controller
@@ -32,22 +31,19 @@ func (r *HelloReconciler) Reconcile(ctx context.Context, request reconcile.Reque
 
 func main() {
 	cfg := config.GetConfigOrDie()
-	opts := manager.Options{}
+	//Is opts the right type to pass in to the Pods filter?
+	podOpts := v1.ListOptions{}
 
-	ctrlManager, err := controllerruntime.NewManager(cfg, opts)
+	clientset, err := kubernetes.NewForConfig(cfg)
+
 	if err != nil {
 		panic(err)
 	}
 
-	reconciler := HelloReconciler{
-		Client: ctrlManager.GetClient(),
-		Scheme: ctrlManager.GetScheme(),
-	}
-
-	//What does the controller do here?
-	ctrl, err := controller.New("gwyn-controller", ctrlManager, controller.Options{
-		Reconciler: &reconciler,
-	})
+	//Pods.List() takes a context.TODO() and a list of options that can contain a metav1.ListOptions
+	//cf. /Users/gwyn/go/pkg/mod/k8s.io/apimachinery@v0.28.3/pkg/apis/meta/v1/types.go:322
+	// This can contain a label to select pods!
+	pods, err := clientset.CoreV1().Pods("").List(context.TODO(), podOpts)
 
 	if err != nil {
 		panic(err)
@@ -55,7 +51,7 @@ func main() {
 
 	for {
 		fmt.Println(time.Now())
-		fmt.Println(ctrlManager)
+		fmt.Println(pods)
 		time.Sleep(3000000000)
 	}
 }

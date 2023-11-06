@@ -6,3 +6,6 @@ container: build
 
 push: container
 	docker push playtechnique/play-controller:pre-release
+
+container-run:
+	docker run -it -p 40000:40000 --rm playtechnique/play-controller:pre-release

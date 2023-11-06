@@ -9,4 +9,5 @@ build:
         dockerfile: Dockerfile
 manifests:
   rawYaml:
+    - kubernetes/rbac.yaml
     - kubernetes/pod.yaml

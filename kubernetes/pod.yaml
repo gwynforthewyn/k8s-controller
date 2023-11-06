@@ -8,6 +8,7 @@ spec:
   containers:
     -   name: play-controller
         image: playtechnique/play-controller:pre-release
+        imagePullPolicy: Always
         securityContext:
           runAsUser: 1001
           allowPrivilegeEscalation: false
@@ -15,6 +16,7 @@ spec:
             drop:
               - "ALL"
   restartPolicy: OnFailure
+  serviceAccountName: play-controller
   securityContext:
     runAsNonRoot: true
     seccompProfile:
